@@ -36,6 +36,6 @@ export interface IOrderResponse {
     total: number;
 }
 
-export type TPayment = "online" | "offline";
+export type TPayment = "card" | "cash";
 
 export type TValidateErrors = Partial<Record<keyof IBuyer, string>>;

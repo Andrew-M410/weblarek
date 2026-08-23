@@ -12,7 +12,7 @@ export class Catalog {
         return this.products;
     }
 
-    public findSelectedProducts(id: string): IProduct | undefined {
+    public findProductsById(id: string): IProduct | undefined {
         return this.products.find((product) => product.id === id);
     }
 

@@ -154,7 +154,7 @@ export interface IOrderRequest extends IBuyer {
 Метод оплаты:
 
 ```
-type TPayment = payment: "online" | "offline"
+type TPayment = payment: "card" | "cash"
 
 ```
 
@@ -182,7 +182,7 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 Методы:
 `setProducts(products: IProduct[]) : void` - сохранение массива товаров полученного в параметрах метода
 `getProducts() : IProduct[]` - получение массива товаров из модели
-`findSelectedProduct(id: string) : IProduct | undefined` - получение одного товара по его id
+`findProduct(id: string) : IProduct | undefined` - получение одного товара по его id
 `setSelectedProduct(selectedProduct : IProduct) : void` - сохранение товара для подробного отображения
 `getSelectedProduct() : IProduct | null` - получение товара для подробного отображения
 

@@ -6,14 +6,15 @@ import { ApiWebLarek } from "./components/сommunication/ApiWebLarek";
 import { API_URL } from "./utils/constants";
 import { apiProducts } from "./utils/data";
 
-function TestCustomer() {
+function testCustomer() {
     console.log("===================Тестирование данных покупателя===================");
 
     const customer = new Customer();
     customer.saveEmail("test@example.com");
-    customer.savePhone("1234567890");
+    //customer.savePhone("1234567890");
+    customer.savePhone(""); // указал пустое поле, добавилась ошибка при валидации
     customer.saveAddress("123 Main St");
-    customer.savePaymentMethod("online");
+    customer.savePaymentMethod("card");
 
     console.log("Данные покупателя:", customer.getCustomerData());
     console.log("Ошибки в данных покупателя:", customer.validateCustomerData());
@@ -21,7 +22,7 @@ function TestCustomer() {
     console.log("Данные покупателя после очистки:", customer.getCustomerData());
 }
 
-function TestCart() {
+function testCart() {
     console.log("========================Тестирование корзины========================");
     const cart = new Cart();
     cart.addProduct({
@@ -49,7 +50,7 @@ function testCatalog() {
     const products = new Catalog();
     products.setProducts(apiProducts.items);
     console.log("Товары в каталоге:", products.getProducts());
-    const selectedProduct = products.findSelectedProducts(
+    const selectedProduct = products.findProductsById(
         "c101ab44-ed99-4a54-990d-47aa2bb4e7d9",
     );
     if (selectedProduct) {
@@ -62,7 +63,7 @@ function testCatalog() {
     console.log("Тестирование каталога завершено.");
 }
 
-function TestApiLarek() {
+function testApiLarek() {
     const api = new Api(API_URL);
     const apiWebLarek = new ApiWebLarek(api);
     console.log("======================Тестирование API WebLarek======================");
@@ -77,7 +78,7 @@ function TestApiLarek() {
         const orderResponse = apiWebLarek.postOrder({
             total: 1450,
             items: ["c101ab44-ed99-4a54-990d-47aa2bb4e7d9"],
-            payment: "online",
+            payment: "card",
             email: "test@example.com",
             phone: "1234567890",
             address: "123 Main St",
@@ -88,9 +89,9 @@ function TestApiLarek() {
     }
 }
 
-export async function runTests() {
-    TestCustomer();
-    TestCart();
+export function runTests() {
+    testCustomer();
+    testCart();
     testCatalog();
-    TestApiLarek();
+    testApiLarek();
 }
