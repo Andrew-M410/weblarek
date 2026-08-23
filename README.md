@@ -98,3 +98,144 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+### Данные
+
+Товар:
+
+```
+interface IProduct {
+  id: string;
+  description: string;
+  image: string;
+  title: string;
+  category: string;
+  price: number | null;
+}
+```
+
+Покупатель:
+
+```
+interface IBuyer {
+  payment: TPayment | null;
+  email: string;
+  phone: string;
+  address: string;
+}
+```
+
+Ответ метода get класса ApiLarek:
+
+```
+export interface IOrderResponse {
+    id: string;
+    total: number;
+}
+```
+
+Ответ метода post класса ApiLarek:
+
+```
+export interface IProductsResponse {
+    total: number;
+    items: IProduct[];
+}
+```
+
+Пост запрос post класса ApiLarek:
+
+```
+export interface IOrderRequest extends IBuyer {
+    total: number;
+    items: string[];
+}
+```
+
+Метод оплаты:
+
+```
+type TPayment = payment: "online" | "offline"
+
+```
+
+Обработка ошибок:
+
+```
+type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
+```
+
+### Модели данных
+
+#### Класс Catalog
+
+Значение и зона ответсвенности:
+Хранит информацию о массиве всех товаров
+Хранит выбранный товар для подробного отображения
+
+Конструктор:
+`constructor(products: IProduct[], selectedProduct: IProduct | null)` - В конструктор передается массив с товарами
+
+Поля класса:
+`private products: IProduct[]` - массив продуктов
+`private selectedProduct: IProduct | null` - выбранный продукт
+
+Методы:
+`setProducts(products: IProduct[]) : void` - сохранение массива товаров полученного в параметрах метода
+`getProducts() : IProduct[]` - получение массива товаров из модели
+`findSelectedProduct(id: string) : IProduct | undefined` - получение одного товара по его id
+`setSelectedProduct(selectedProduct : IProduct) : void` - сохранение товара для подробного отображения
+`getSelectedProduct() : IProduct | null` - получение товара для подробного отображения
+
+#### Класс Cart
+
+Значение и зона ответсвенности:
+Хранит массив товаров, которые пользователь выбрал для покупки
+
+Конструктор:
+`constructor(products: IProduct[])` - В конструктор передается массив с товарами
+
+Поля класса:
+`private products: IProduct[]` - массив продуктов добавленных в корзину
+
+Методы:
+`getProducts() : IProduct[]` - получение массива товаров, которые находятся в корзине
+`addProduct(id: string) : void` - добавление товара, который был получен в параметре, в массив корзины
+`delProduct(id: string) : void` - удаление товара, полученного в параметре из массива корзины
+`clearCart(): void` - очистка корзины
+`getAllPrice(): number` - получение стоимости всех товаров в корзине
+`getQuantity(): number` - получение количества товаров в корзине
+`isInCart(id: string): boolean` - проверка наличия товара в корзине по его id, полученного в параметр метода
+
+#### Класс Customer
+
+Значение и зона ответсвенности:
+Хранит данные пользователя, которые он указывает при оформлении заказа
+
+Конструктор:
+`constructor(сustomer: IBuyer)` - В конструктор передается массив с данными покупателя
+
+Поля класса:
+`private сustomer: IBuyer` - массив данных о доставке и оплате покупателя
+
+Методы:
+`savePaymentMethod(paymentMethod: TPayment): void` - сохраняет метод оплаты пользователя
+`saveEmail(email: string): void` - сохраняет почту пользователя
+`savePhone(phone: string): void` - сохраняет номер пользователя
+`saveAddress(address: string): void` - сохраняет адресс пользователя
+`getCustomerData(): IBuyer` - получение всех данных пользователя
+`clearCustomerData(): void` - очистка данных пользователя
+`validateCustomerData(): TValidateErrors` - валидация данных пользователя
+
+### Слои коммуникации
+
+#### Класс ApiWebLarek
+
+Значение и зона ответсвенности:
+Класс будет использовать композицию, чтобы выполнить запрос на сервер с помощью метода get класса Api и будет получать с сервера объект с массивом товаров
+
+Поле класса:
+`private Api: IApi` - экземпляр класса API в который мы закинули нужный нам url
+
+Методы:
+`getProducts(): Promise<IProductsResponse>` - обращается к методу get класса Api с эндпоинтом на get запрос и возвращает объект с количеством товаров и самими товарами
+`postOrder(data: IOrderRequest): Promise<IOrderResponse>` - обращается к методу post класса Api с эндпоинтом на post запрос и возвраащет количество продуктов с заказа и их id
