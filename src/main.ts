@@ -49,7 +49,7 @@ const basketTemplate = ensureElement<HTMLTemplateElement>("#basket");
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>("#card-basket");
 const formPaymentTemplate = ensureElement<HTMLTemplateElement>("#order");
 const formContactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
-const finishFormTemplate = ensureElement<HTMLTemplateElement>("#success");
+const SucsessFormTemplate = ensureElement<HTMLTemplateElement>("#success");
 
 const cardPreviewElement = cloneTemplate<HTMLElement>(cardPreviewTemplate);
 const basketElement = cloneTemplate<HTMLElement>(basketTemplate);
@@ -68,8 +68,8 @@ const formContacts = new FormContactsView(
   cloneTemplate<HTMLFormElement>(formContactsTemplate),
   events,
 );
-const finishForm = new SucsessView(
-  cloneTemplate<HTMLElement>(finishFormTemplate),
+const SucsessForm = new SucsessView(
+  cloneTemplate<HTMLElement>(SucsessFormTemplate),
   events,
 );
 
@@ -205,7 +205,7 @@ function renderCustomerData(
 
 function renderOrderSuccess(total: number): void {
   modal.render({
-    content: finishForm.render({
+    content: SucsessForm.render({
       total: String(total),
     }),
   });

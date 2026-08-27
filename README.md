@@ -484,5 +484,5 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 - `customer:validated` — получает ошибки валидации от `Customer` и обновляет состояние `FormPaymentView` и `FormContactsView`
 - `order:submit` — показывает форму контактов `FormContactsView` в модальном окне
 - `contacts:change` — сохраняет email/phone в `Customer` и запускает валидацию
-- `contacts:submit` — собирает данные покупателя и содержимое корзины, отправляет заказ через `ApiWebLarek`, очищает корзину, обновляет счетчик и показывает `FinishBuyViews`
-- `finishBuy:close` — закрывает модальное окно
+- `contacts:submit` — собирает данные покупателя и содержимое корзины, отправляет заказ через `ApiWebLarek`, очищает корзину, обновляет счетчик и показывает `SucsessView`
+- `sucsess:close` — закрывает модальное окно
