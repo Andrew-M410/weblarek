@@ -182,7 +182,7 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 Методы:
 `setProducts(products: IProduct[]) : void` - сохранение массива товаров полученного в параметрах метода
 `getProducts() : IProduct[]` - получение массива товаров из модели
-`findProduct(id: string) : IProduct | undefined` - получение одного товара по его id
+`findProductById(id: string) : IProduct | undefined` - получение одного товара по его id
 `setSelectedProduct(selectedProduct : IProduct) : void` - сохранение товара для подробного отображения
 `getSelectedProduct() : IProduct | null` - получение товара для подробного отображения
 
@@ -239,3 +239,250 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 Методы:
 `getProducts(): Promise<IProductsResponse>` - обращается к методу get класса Api с эндпоинтом на get запрос и возвращает объект с количеством товаров и самими товарами
 `postOrder(data: IOrderRequest): Promise<IOrderResponse>` - обращается к методу post класса Api с эндпоинтом на post запрос и возвраащет количество продуктов с заказа и их id
+
+### Слой View
+
+#### Компонент Header
+
+Интерфейс: `IHeaderData` {
+`counter: number;`
+}
+
+Класс: `Header`
+Значение и зона ответсвенности:
+Отображает шапку сайта и состояние корзины
+
+Поля класса:
+`basketButton: HTMLButtonElement`
+`counterElement: HTMLElement`
+
+Методы:
+`set counter(value: number): void` — обновляет счетчик товаров
+
+События:
+`basket:open` — при клике на корзину. Презентер открывает окно корзины.
+
+#### Компонент CatalogView
+
+Интерфейс: `ICatalogView` {
+`catalog: HTMLElement[];`
+}
+
+Класс: `CatalogView`
+Значение и зона ответсвенности:
+Отвечает за отображение списка карточек в галерее
+
+Поля класса:
+`container: HTMLElement` — контейнер галереи
+
+Методы:
+`set catalog(value: HTMLElement[]): void` — очистка контейнера и добавление карточек
+
+События:
+`CatalogView` не генерирует события сам по себе. Он рендерит карточки, которые создаёт презентер.
+
+#### Базовый класс карточки CardView<T>
+
+Значение и зона ответсвенности:
+Установка названия
+Установка цены
+Хранение id товара
+
+Поля класса:
+`title: HTMLElement`
+`price: HTMLElement`
+`productId: string`
+
+Методы:
+`set title(value: string): void`
+`set price(value: number | null): void`
+`set id(value: string): void`
+
+##### Класс CardCatalogView(Карточка в галерее)
+
+Значение и зона ответсвенности:
+Отображает категорию товара
+Отображает изображение товара
+При клике генерирует событие выбора товара
+
+События:
+`product:select` — клик по карточке. Презентер обрабатывает это событие, выбирает товар и открывает модальное окно с описанием.
+
+##### Класс CardDescriptionView(Карточка товара с описанием)
+
+Значение и зона ответсвенности:
+Отображает категорию
+Отображает изображение
+Отображает описание товара
+Отображает цену и название
+
+События:
+`CardDescriptionView` — не генерирует события сам по себе. Он служит как контент для модального окна товара.
+
+##### Класс CardBasketView(Карточка корзины)
+
+Значение и зона ответсвенности:
+Отображает порядок товара в корзине
+Кнопка удаления товара
+
+События:
+`product:delete` — клик по кнопке удаления. Презентер удаляет товар из корзины и открывает обновлённую корзину.
+
+#### Компонент Modal
+
+Интерфейс: `IModal` {
+`content: string | HTMLElement | HTMLFormElement;`
+}
+
+Класс: `Modal`
+Отвечает за показ модального окна и закрытие.
+
+Поля класса:
+`contentElement: HTMLElement`
+`closeButton: HTMLButtonElement`
+
+Методы:
+`set content(value: string | HTMLElement): void` — вставляет HTML или DOM-элемент
+`open(): void` — показывает модалку
+`close(): void` — закрывает модалку и очищает содержимое
+
+События:
+`modal:close` — клик по кнопке закрытия. Презентер закрывает модальное окно.
+
+#### Компонент BuyView
+
+Интерфейс: `IBuyData` {
+`id?: string;`
+`price?: number | null;`
+`content?: HTMLElement;`
+}
+
+Класс: `BuyView`
+Отвечает за кнопку покупки товара и переключение на удаление из корзины.
+
+Значение и зона ответсвенности:
+Отображает кнопку "В корзину" или "Удалить из корзины"
+Если товара нет в наличии, блокирует кнопку
+Если товар уже в корзине, предлагает удалить его
+
+Поля класса:
+`actionButton: HTMLButtonElement`
+`productId: string`
+
+События:
+`product:buy` — клик по кнопке, когда товара нет в корзине
+`product:delete` — клик по кнопке, когда товар уже есть в корзине
+
+#### Компонент BascetView
+
+Интерфейс: `IBasketView` {
+`products: HTMLElement[];`
+`total: string;`
+}
+
+Класс: `BascetView`
+Значение и зона ответсвенности:
+Отвечает за отображение списка товаров корзины и переход к оформлению заказа.
+
+Поля класса:
+`listElement: HTMLElement`
+`totalElement: HTMLElement`
+`checkoutButton: HTMLButtonElement`
+
+Методы:
+`set products(value: HTMLElement[]): void` — добавляет элементы в список
+`set total(value: string): void` — устанавливает итоговую сумму
+`set checkoutDisabled(value: boolean): void` — отключает кнопку оформления
+
+События:
+`basket:checkout` — клик по кнопке оформления заказа. Презентер открывает форму оплаты.
+
+#### Базовый класс FormView<T>
+
+Значение и зона ответсвенности:
+Обрабатывает отправку формы через кнопку submit
+Обрабатывает ввод данных в поля
+Обрабатывает отображение ошибок
+Обрабатывает блокировку кнопки отправки
+
+Поля:
+`submitButton: HTMLButtonElement`
+`errorELement: HTMLElement`
+`formElement: HTMLFormElement`
+
+Поведение:
+При клике на кнопку вызывает `events.emit('${formName}:submit')`
+При вводе в поле вызывает `events.emit('${formName}:change', { field, value })`
+
+Состояние:
+`set valid(value: boolean): void`
+`set error(value: string): void`
+
+#### Компонент FormPaymentView
+
+Интерфейс: `IFormPayment` {
+`payment: IBuyer['payment'];`
+`address: IBuyer['address'];`
+}
+
+Класс: `FormPaymentView`
+Значение и зона ответсвенности:
+Отвечает за выбор способа оплаты и ввод адреса доставки.
+
+События:
+`payment:change` — выбор способа оплаты кнопками «карта»/«наличка»
+`order:change` — ввод адреса в поле формы
+`order:submit` — отправка формы оплаты
+
+#### Компонент FormContactsView
+
+Интерфейс `IFormContacts` {
+`email: IBuyer['email'];`
+`phone: IBuyer['phone'];`
+}
+
+Класс: `FormContactsView`
+Значение и зона ответсвенности:
+Отвечает за ввод и валидацию контактных данных покупателя.
+
+События:
+`contacts:change` — ввод email или телефона
+`contacts:submit` — отправка контактной формы
+
+#### Компонент SucsessView
+
+Интерфейс: `SucsessInterface` {
+`total: string;`
+}
+
+Класс `SucsessView`
+Значение и зона ответсвенности:
+Отвечает за экран успешного заказа.
+
+Поля класса:
+`totalEl: HTMLParagraphElement`
+`closeButton: HTMLButtonElement`
+
+События:
+`sucsess:close` — клик по кнопке закрытия. Презентер закрывает модальное окно.
+
+### Событийный поток View → Presenter
+
+`View` отвечает за пользовательский интерфейс и генерацию событий
+`src/main.ts` выступает в роли презентера - он подписывается на события от View -> обновляет модели данных -> выбирает нужный компонент для отрисовки и управляет модальными окнами
+
+События, обрабатываемые презентером:
+- `catalog:changed` — рендерит карточки каталога через `CatalogView` и `CardCatalogView`
+- `product:select` — находит товар, сохраняет его как выбранный, создает `CardDescriptionView`, `BuyView`, рендерит их в `Modal`
+- `modal:close` — закрывает модальное окно
+- `basket:open` — собирает товары из `Cart`, создает `CardBasketView` для каждого товара, рендерит `BascetView` в `Modal`
+- `product:buy` — добавляет товар в `Cart`, обновляет счетчик в `Header`, закрывает модалку
+- `product:delete` — удаляет товар из `Cart`, обновляет счетчик в `Header`, затем повторно открывает корзину
+- `basket:checkout` — открывает форму оплаты `FormPaymentView` в модальном окне
+- `payment:change` — сохраняет способ оплаты в `Customer`, перерисовывает форму оплаты и запускает валидацию
+- `order:change` — при изменении адреса сохраняет его в `Customer` и запускает валидацию
+- `customer:validated` — получает ошибки валидации от `Customer` и обновляет состояние `FormPaymentView` и `FormContactsView`
+- `order:submit` — показывает форму контактов `FormContactsView` в модальном окне
+- `contacts:change` — сохраняет email/phone в `Customer` и запускает валидацию
+- `contacts:submit` — собирает данные покупателя и содержимое корзины, отправляет заказ через `ApiWebLarek`, очищает корзину, обновляет счетчик и показывает `FinishBuyViews`
+- `finishBuy:close` — закрывает модальное окно

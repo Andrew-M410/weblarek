@@ -1,26 +1,31 @@
 import { IProduct } from "@/types/index";
+import { IEvents } from "../base/Events";
 
 export class Catalog {
-    private products: IProduct[] = [];
-    private selectedProduct: IProduct | null = null;
+  private products: IProduct[] = [];
+  private selectedProduct: IProduct | null = null;
 
-    public setProducts(products: IProduct[]): void {
-        this.products = products;
-    }
+  constructor(private events: IEvents) {}
 
-    public getProducts(): IProduct[] {
-        return this.products;
-    }
+  public setProducts(products: IProduct[]): void {
+    this.products = products;
+    this.events.emit("catalog:changed");
+  }
 
-    public findProductsById(id: string): IProduct | undefined {
-        return this.products.find((product) => product.id === id);
-    }
+  public getProducts(): IProduct[] {
+    return this.products;
+  }
 
-    public setSelectedProduct(selectedProduct: IProduct): void {
-        this.selectedProduct = selectedProduct;
-    }
+  public findProductsById(id: string): IProduct | undefined {
+    return this.products.find((product) => product.id === id);
+  }
 
-    public getSelectedProduct(): IProduct | null {
-        return this.selectedProduct;
-    }
+  public setSelectedProduct(selectedProduct: IProduct): void {
+    this.selectedProduct = selectedProduct;
+    this.events.emit("catalog:selected");
+  }
+
+  public getSelectedProduct(): IProduct | null {
+    return this.selectedProduct;
+  }
 }
