@@ -291,12 +291,10 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 Поля класса:
 `title: HTMLElement`
 `price: HTMLElement`
-`productId: string`
 
 Методы:
 `set title(value: string): void`
 `set price(value: number | null): void`
-`set id(value: string): void`
 
 ##### Класс CardCatalogView(Карточка в галерее)
 
@@ -349,31 +347,7 @@ type TValidateErrors = Partial<Record<keyof IBuyer, string>>;
 События:
 `modal:close` — клик по кнопке закрытия. Презентер закрывает модальное окно.
 
-#### Компонент BuyView
-
-Интерфейс: `IBuyData` {
-`id?: string;`
-`price?: number | null;`
-`content?: HTMLElement;`
-}
-
-Класс: `BuyView`
-Отвечает за кнопку покупки товара и переключение на удаление из корзины.
-
-Значение и зона ответсвенности:
-Отображает кнопку "В корзину" или "Удалить из корзины"
-Если товара нет в наличии, блокирует кнопку
-Если товар уже в корзине, предлагает удалить его
-
-Поля класса:
-`actionButton: HTMLButtonElement`
-`productId: string`
-
-События:
-`product:buy` — клик по кнопке, когда товара нет в корзине
-`product:delete` — клик по кнопке, когда товар уже есть в корзине
-
-#### Компонент BascetView
+#### Компонент BasketView
 
 Интерфейс: `IBasketView` {
 `products: HTMLElement[];`

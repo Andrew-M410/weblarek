@@ -23,7 +23,7 @@ export class SucsessView extends Component<SucsessInterface> {
     );
 
     this.closeButton.addEventListener("click", () => {
-      this.events.emit("sucsess:closeClick");
+      this.events.emit("sucsess:close");
     });
   }
 

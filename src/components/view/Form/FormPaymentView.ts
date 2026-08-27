@@ -30,12 +30,12 @@ export class FormPaymentView extends FormView<IFormPayment> {
     );
     this.onlineButton.addEventListener("click", () => {
       this.events.emit("payment:change", {
-        payment: "online",
+        payment: "card",
       });
     });
     this.offlineButton.addEventListener("click", () => {
       this.events.emit("payment:change", {
-        payment: "offline",
+        payment: "cash",
       });
     });
   }

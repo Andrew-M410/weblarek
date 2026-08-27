@@ -27,7 +27,7 @@ import { CardCatalogView } from "./components/view/Card/CardCatalogView";
 import { CardBasketView } from "./components/view/Card/CardBasketView";
 import { CatalogView } from "./components/view/CatalogView";
 import { BascetView } from "./components/view/BasketView";
-import { FormContactsView } from "./components/view/Form/FormContactsVIew";
+import { FormContactsView } from "./components/view/Form/FormContactsView";
 import { FormPaymentView } from "./components/view/Form/FormPaymentView";
 import { SucsessView } from "./components/view/SucsessView";
 
@@ -49,7 +49,7 @@ const basketTemplate = ensureElement<HTMLTemplateElement>("#basket");
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>("#card-basket");
 const formPaymentTemplate = ensureElement<HTMLTemplateElement>("#order");
 const formContactsTemplate = ensureElement<HTMLTemplateElement>("#contacts");
-const SucsessFormTemplate = ensureElement<HTMLTemplateElement>("#success");
+const sucsessFormTemplate = ensureElement<HTMLTemplateElement>("#success");
 
 const cardPreviewElement = cloneTemplate<HTMLElement>(cardPreviewTemplate);
 const basketElement = cloneTemplate<HTMLElement>(basketTemplate);
@@ -68,8 +68,8 @@ const formContacts = new FormContactsView(
   cloneTemplate<HTMLFormElement>(formContactsTemplate),
   events,
 );
-const SucsessForm = new SucsessView(
-  cloneTemplate<HTMLElement>(SucsessFormTemplate),
+const sucsessForm = new SucsessView(
+  cloneTemplate<HTMLElement>(sucsessFormTemplate),
   events,
 );
 
@@ -205,7 +205,7 @@ function renderCustomerData(
 
 function renderOrderSuccess(total: number): void {
   modal.render({
-    content: SucsessForm.render({
+    content: sucsessForm.render({
       total: String(total),
     }),
   });
@@ -253,11 +253,11 @@ events.on("catalog:cardClick", ({ id }: { id: string }) => {
   }
 });
 
-events.on("modal:closeButtonClick", () => {
+events.on("modal:close", () => {
   modal.close();
 });
 
-events.on("basket:openClick", openBasket);
+events.on("basket:open", openBasket);
 
 events.on("preview:click", () => {
   const product = catalog.getSelectedProduct();
@@ -280,12 +280,6 @@ events.on("basket:itemDeleteClick", ({ id }: { id: string }) => {
 events.on("cart:changed", () => {
   header.сounter = cart.getQuantity();
   renderBasket();
-
-  const selectedProduct = catalog.getSelectedProduct();
-
-  if (selectedProduct) {
-    renderPreviewButton(selectedProduct);
-  }
 });
 
 events.on("basket:checkoutClick", () => {
@@ -310,11 +304,7 @@ events.on("customer:changed", () => {
 });
 
 events.on("order:submit", () => {
-  const errors = customer.validateCustomerData();
-
-  if (!errors.payment && !errors.address) {
     openContactsForm();
-  }
 });
 
 events.on(
@@ -326,14 +316,10 @@ events.on(
 );
 
 events.on("contacts:submit", () => {
-  const errors = customer.validateCustomerData();
-
-  if (!errors.email && !errors.phone) {
     submitOrder(customer.getCustomerData());
-  }
 });
 
-events.on("sucsess:closeClick", () => {
+events.on("sucsess:close", () => {
   modal.close();
 });
 

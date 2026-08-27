@@ -23,7 +23,7 @@ export class Header extends Component<IHeader> {
     );
 
     this.basketButton.addEventListener("click", () => {
-      this.events.emit("basket:openClick");
+      this.events.emit("basket:open");
     });
   }
 
